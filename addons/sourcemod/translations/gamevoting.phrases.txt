@@ -10,6 +10,7 @@
 		"fr" "Le joueur {1} a voté pour le bannissement de {2}. ({3}/{4})"
 		"es" "El jugador {1} vota para banear a {2}. ({3}/{4}) votos requeridos."
 		"chi" "玩家 {1} 发起了对 {2} 的封禁投票. ({3}/{4})"
+		"pl" "{1} zagłosował za zbanowaniem {2}. ({3}/{4})"
 	}
 	"gv_voted_for_kick"
 	{
@@ -21,6 +22,7 @@
 		"fr" "Le joueur {1} a voté pour exclure {2}. ({3}/{4})"
 		"es" "El jugador {1} vota para kickear a {2}. ({3}/{4}) votos requeridos."
 		"chi" "玩家 {1} 发起了对 {2} 的踢出投票. ({3}/{4})"
+		"pl" "{1} zagłosował za wyrzuceniem {2}. ({3}/{4})"
 	}
 	"gv_voted_for_mute"
 	{
@@ -32,6 +34,7 @@
 		"fr" "Le joueur {1} a voté pour le mute de {2}. ({3}/{4})"
 		"es" "El jugador {1} vota para mutear a {2}. ({3}/{4}) votos requeridos."
 		"chi" "玩家 {1} 发起了对 {2} 的静音投票. ({3}/{4})"
+		"pl" "{1} Zagłosował za wyciszeniem {2}. ({3}/{4})"
 	}
 	"gv_wait_before_startvote"
 	{
@@ -43,6 +46,7 @@
 		"fr" "Veuillez patienter {1} sec avant de commencer le vote public."
 		"es" "Porfavor espera {1} segundos antes de empezar una votación."
 		"chi" "请等待 {1} 秒后再发起投票."
+		"pl" "Proszę poczekać {1}s przed kolejnym głosowaniem."
 	}
 	"gv_min_players"
 	{
@@ -54,6 +58,7 @@
 		"fr" "Le minimum de joueur pour le vote doit être de  - {1}."
 		"es" "Jugadores mínimos para empezar una votación - {1}."
 		"chi" "玩家数至少应达到 {1} 人才能发起投票."
+		"pl" "Minimalna ilość graczy wymagana do zagłosowania - {1}."
 	}
 	"gv_ban_title"
 	{
@@ -64,6 +69,7 @@
 		"fr" "BANNIR"
 		"es" "BAN"
 		"chi" "封禁"
+		"pl" "ZBANOWAĆ"
 	}
 	"gv_kick_title"
 	{
@@ -74,6 +80,7 @@
 		"fr" "EXCLURE"
 		"es" "KICK"
 		"chi" "踢出"
+		"pl" "WYKOPAĆ"
 	}
 	"gv_mute_title"
 	{
@@ -84,6 +91,7 @@
 		"fr" "MUTE"
 		"es" "MUTE"
 		"chi" "静音"
+		"pl" "WYCISZYĆ"
 	}
 	"gv_ban_title_question"
 	{
@@ -95,6 +103,7 @@
 		"fr" "BANNIR {1} ({2})?"
 		"es" "BANEAR A {1} ({2})?"
 		"chi" "封禁 {1} ({2})?"
+		"pl" "ZBANOWAĆ {1} ({2})?"
 	}
 	"gv_kick_title_question"
 	{
@@ -106,6 +115,7 @@
 		"fr" "EXCLURE {1}?"
 		"es" "KICKEAR A {1}?"
 		"chi" "踢出 {1}?"
+		"pl" "WYKOPAĆ {1}?"
 	}
 	"gv_mute_title_question"
 	{
@@ -117,6 +127,7 @@
 		"fr" "MUTE {1}?"
 		"es" "MUTEAR A {1}?"
 		"chi" "静音 {1}?"
+		"pl" "WYCISZYĆ {1}?"
 	}
 	"gv_yes"
 	{
@@ -127,6 +138,7 @@
 		"fr" "Oui"
 		"es" "Si"
 		"chi" "是"
+		"pl" "Tak"
 	}
 	"gv_no"
 	{
@@ -137,6 +149,7 @@
 		"fr" "Non"
 		"es" "No"
 		"chi" "否"
+		"pl" "Nie"
 	}
 	"gv_startvote_ban"
 	{
@@ -148,6 +161,7 @@
 		"fr" "Le joueur {1} a lancé un vote d'interdiction publique pour {2} (Raison: {3})"
 		"es" "El jugador {1} ha lanzado un voto de prohibición pública para {2} (Motivo: {3})"
 		"chi" "玩家 {1} 发起了封禁 {2} 的公开投票 (理由: {3})"
+		"pl" "Gracz {1} rozpoczął głosowanie na zbanowanie gracza {2} (przyczyna: {3})"
 	}
 	"gv_startvote_kick"
 	{
@@ -159,5 +173,13 @@
 		"fr" "Le joueur {1} a lancé un vote public pour le coup de pied {2} (Raison: {3})"
 		"es" "El jugador {1} ha lanzado una votación pública para la patada {2} (Motivo: {3})"
 		"chi" "玩家 {1} 发起了踢出 {2} 的公开投票 (理由: {3})"
+		"pl" "Gracz {1} rozpoczął głosowanie na wyrzucenie gracza {2} (przyczyna: {3})"
+	}
+
+	"gv_voted_canceled"
+	{
+		"#format" "{1:s}"
+		"en" "Vote for {1} already completed, cannot be started until the next map.
+		"pl" "Głosowanie na {1} zostało zakończone, nie można rozpocząć nowego aż do następnej mapy."
 	}
 }

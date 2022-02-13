@@ -63,6 +63,7 @@ public Plugin myinfo =
 #define CONVAR_BAN_ENABLE ConVars[6]
 #define CONVAR_KICK_ENABLE ConVars[7]
 #define CONVAR_MUTE_ENABLE ConVars[8]
+#define CONVAR_PROGRESS_RESULT_PUBLIC ConVars[9]
 //#define CONVAR_SILENCE_ENABLE ConVars[9]
 #define CONVAR_MIN_PLAYERS ConVars[10]
 #define CONVAR_AUTODISABLE ConVars[11]
@@ -103,6 +104,8 @@ char LogFilePath[512];
 ArrayList gReasons;
 ENUM_VOTE_CHOISE g_VoteChoise[MAXPLAYERS+1];
 ENUM_KICKED_PLAYERS g_KickedPlayers[MAXPLAYERS+1];
+
+char VOTE_ALREADY_TAKEN[MAXPLAYERS+1][17];
 
 bool is_sourcebanspp_comms = false;
 bool is_sourcebanspp_bans = false;
@@ -213,6 +216,7 @@ public void register_ConVars() {
 	CONVAR_BAN_ENABLE = CreateConVar("gamevoting_voteban",	"1", "Enable or disable voteban functional (def:1)", _, true, 0.0, true, 1.0);
 	CONVAR_KICK_ENABLE = CreateConVar("gamevoting_votekick",	"1", "Enable or disable votekick (def:1)", _, true, 0.0, true, 1.0);
 	CONVAR_MUTE_ENABLE = CreateConVar("gamevoting_votemute",	"1", "Enable or disable votemute (def:1)", _, true, 0.0, true, 1.0);
+	CONVAR_PROGRESS_RESULT_PUBLIC = CreateConVar("gamevoting_vote_progress_public", "1", "Make public the results of voting in progress (def:1)", _, true, 1.0, false);
 	//CONVAR_SILENCE_ENABLE = CreateConVar("gamevoting_votesilence",	"1",	"Enable or disable silence (def:1)", _, true, 0.0, true, 1.0);
 	// Durations
 	CONVAR_BAN_DURATION = CreateConVar("gamevoting_voteban_delay", "20", "Ban duration in minutes (def:120)", _, true, 1.0, false);
@@ -343,6 +347,26 @@ public void OnPluginStart() {
 
 public void OnPluginEnd() {
 	UnhookEvent("player_disconnect", Event_PlayerDisconnected);
+}
+
+public void OnClientDisconnect(int client)
+{
+	VOTE_ALREADY_TAKEN[client]="";
+}
+
+public void OnMapEnd()
+{
+	for(int client=1; client<MAXPLAYERS+1; client++)
+	{
+    	VOTE_ALREADY_TAKEN[client]="";
+	}
+}
+
+public void SetPlayerVotePass(int client)
+{
+	char auth[17];
+	GetClientAuthId(client, AuthId_SteamID64, auth, 17);
+	VOTE_ALREADY_TAKEN[client]=auth;
 }
 
 public void GVInitLog() {
@@ -628,7 +652,8 @@ public void SetChoise(int type, int client, int target) {
 					char c_name[32],t_name[32];
 					GetClientName(client, c_name, sizeof(c_name));
 					GetClientName(target, t_name, sizeof(t_name));
-					PrintToChatAll("\x04[GameVoting]\x01 %t", "gv_voted_for_ban", c_name, t_name, current, needed);
+					if(CONVAR_PROGRESS_RESULT_PUBLIC.BoolValue)
+						PrintToChatAll("\x04[GameVoting]\x01 %t", "gv_voted_for_ban", c_name, t_name, current, needed);
 
 					LOGS_ENABLED {
 						char reason[64];
@@ -650,7 +675,8 @@ public void SetChoise(int type, int client, int target) {
 					GetClientName(client, c_name, sizeof(c_name));
 					GetClientName(target, t_name, sizeof(t_name));
 					//PrintToChatAll("Player %N voted for kick %N. (%d/%d)", client, target, current, needed);
-					PrintToChatAll("\x04[GameVoting]\x01 %t", "gv_voted_for_kick", c_name, t_name, current, needed);
+					if(CONVAR_PROGRESS_RESULT_PUBLIC.BoolValue)
+						PrintToChatAll("\x04[GameVoting]\x01 %t", "gv_voted_for_kick", c_name, t_name, current, needed);
 					
 					LOGS_ENABLED {
 						char auth1[32];//,auth2[32];
@@ -667,7 +693,8 @@ public void SetChoise(int type, int client, int target) {
 					GetClientName(client, c_name, sizeof(c_name));
 					GetClientName(target, t_name, sizeof(t_name));
 					//PrintToChatAll("Player %N voted for mute %N. (%d/%d)", client, target, current, needed);
-					PrintToChatAll("\x04[GameVoting]\x01 %t", "gv_voted_for_mute", c_name, t_name, current, needed);
+					if(CONVAR_PROGRESS_RESULT_PUBLIC.BoolValue)
+						PrintToChatAll("\x04[GameVoting]\x01 %t", "gv_voted_for_mute", c_name, t_name, current, needed);
 					
 					LOGS_ENABLED {
 						char auth1[32];//,auth2[32];
@@ -784,7 +811,7 @@ public void CheckCommand(int client, const char[] args, const char[] pref) {
 			return;
 		}
 	}
-	
+
 	if(StrEqual(command, BAN_COMMAND, false)) {
 		if(CONVAR_BAN_ENABLE.IntValue < 1) {
 			return;
@@ -938,7 +965,6 @@ public void ShowMenu(int client, int type, bool startvote_force) {
 						continue;
 					}
 				}
-			
 				if(target != client && !HasImmunity(target)) {
 					IntToString(target, id, sizeof(id));
 					FormatEx(Name,sizeof(Name),"%N",target);
@@ -1062,8 +1088,16 @@ public int startvote_menu_player_handler(Menu menu, MenuAction action, int clien
 	
 		char info[11];
 		GetMenuItem(menu, item, info, sizeof(info));
-		StartVote(client, StringToInt(info), VAR_CTYPE);
 		
+		int target = StringToInt(info);
+		if(!StrEqual(VOTE_ALREADY_TAKEN[target], ""))
+		{
+			PrintToChat(client, "\x04[GameVoting]\x01 %t", "gv_voted_canceled", target);
+			CloseHandle(menu);
+		}
+
+		SetPlayerVotePass(target);
+		StartVote(client, target, VAR_CTYPE);
 	}
 	else if (action == MenuAction_End) {
 		CloseHandle(menu);
