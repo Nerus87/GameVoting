@@ -248,28 +248,45 @@ public void register_ConVars() {
 
 
 public int MenuHandler_Reason(Menu menu, MenuAction action, int client, int item) {
-	if(action == MenuAction_End) CloseHandle(menu);
-	else if(action == MenuAction_Select) 
+	if(action == MenuAction_End) 
+	{
+		CloseHandle(menu);
+
+		return 0;
+	}
+
+	if(action == MenuAction_Select) 
 	{
 		char item1[11];
 		GetMenuItem(menu, item, item1, sizeof(item1));
 		g_VoteChoise[client].voteban_reason = StringToInt(item1); // reason from array
-		LOGS_ENABLED {
+		
+		LOGS_ENABLED 
+		{
 			char reason[64];
-			if(g_VoteChoise[client].voteban_reason > -1) {
+			if(g_VoteChoise[client].voteban_reason > -1)
+			{
 				gReasons.GetString(g_VoteChoise[client].voteban_reason, reason, sizeof(reason));
 			}
+
 			PrintToServer("Player %N choised reason : %s - #%i - #%i",  client, reason, g_VoteChoise[client].voteban_reason, StringToInt(item1));
 			LogToFile(LogFilePath, "Player %N choised reason : %s - #%i - #%i",  client, reason, g_VoteChoise[client].voteban_reason, StringToInt(item1));
 		}
+
 		// Handle StartVote Enable/Disable
-		if(CONVAR_START_VOTE_ENABLE.IntValue > 0) {
+		if(CONVAR_START_VOTE_ENABLE.IntValue > 0) 
+		{
 			ShowMenu(client, VOTE_BAN, true);
 		}
-		else {
+		else
+		{
 			ShowMenu(client, VOTE_BAN, false);
 		}
+
+		return 0;
 	}
+
+	return 0;
 }
 
 public void DisplayReasons(int client) {
@@ -772,13 +789,16 @@ public bool IsCorrectPlayer(int client) {
 public Action Event_PlayerDisconnected(EVENT_PARAMS) 
 {
 	int client = EVENT_GET_PLAYER
-	VALID_PLAYER {
+	VALID_PLAYER 
+	{
 		ClearChoise(client);
 		// valid player
 		#if defined PLUGIN_DEBUG_MODE
 			LogMessage("%N player disconnected", client);
 		#endif
 	}
+
+	return Plugin_Continue;
 }
 
 // Check commands
@@ -1084,8 +1104,8 @@ public void StartVote(int client, int target, int type) {
 // startvote_menu_handler
 public int startvote_menu_player_handler(Menu menu, MenuAction action, int client, int item) {
 
-	if (action == MenuAction_Select) {
-	
+	if (action == MenuAction_Select) 
+	{
 		char info[11];
 		GetMenuItem(menu, item, info, sizeof(info));
 		
@@ -1098,46 +1118,71 @@ public int startvote_menu_player_handler(Menu menu, MenuAction action, int clien
 
 		SetPlayerVotePass(target);
 		StartVote(client, target, VAR_CTYPE);
+
+		return 0;
 	}
-	else if (action == MenuAction_End) {
+	
+	if (action == MenuAction_End) 
+	{
 		CloseHandle(menu);
 	}
+
+	return 0;
 }
 
 // action startvote
-public int menu_startvote_action_handler(Menu menu, MenuAction action, int client, int item) {
-	if (action == MenuAction_Select) {
+public int menu_startvote_action_handler(Menu menu, MenuAction action, int client, int item)
+{
+	if (action == MenuAction_Select)
+	{
 		char info[48];
 		GetMenuItem(menu, item, info, sizeof(info));
+		
 		if(strlen(info) > 0) 
 		{
 			char ex[3][11];
 			ExplodeString(info, "|", ex, 3, 11);
 			int target = StringToInt(ex[1]);
 			int type = StringToInt(ex[2]);
-			VALID_TARGET {
+			
+			VALID_TARGET
+			{
 				SetChoise(type, client, target);
 			}
 		}
+
+		return 0;
 	}
-	else if (action == MenuAction_End) {
+	
+	if (action == MenuAction_End)
+	{
 		CloseHandle(menu);
 	}
+
+	return 0;
 }
 
 // Menu callback
-public int menu_handler(Menu menu, MenuAction action, int client, int item) {
-	if (action == MenuAction_Select) {
+public int menu_handler(Menu menu, MenuAction action, int client, int item)
+{
+	if (action == MenuAction_Select)
+	{
 		char info[11];
 		GetMenuItem(menu, item, info, sizeof(info));
 		int target = StringToInt(info);
-		VALID_TARGET {
+		
+		VALID_TARGET
+		{
 			SetChoise(VAR_CTYPE, client, target);
 		}
 	}
-	else if (action == MenuAction_End) {
+	
+	if (action == MenuAction_End)
+	{
 		CloseHandle(menu);
 	}
+
+	return 0;
 }
 
 public void player_steam(int client, char[] steam_id, int size) {
@@ -1271,6 +1316,6 @@ public int HasReason(int target) {
 			}
 		}
 	}
-		
+
 	return -1;
 }
